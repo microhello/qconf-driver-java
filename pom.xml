@@ -6,20 +6,24 @@
 
     <groupId>net.qihoo</groupId>
     <artifactId>qconf-driver-java</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
-    <!-- ======= Configuration settings for Nexus deployment of POM file ====== -->
-    <distributionManagement>
-        <repository>
-            <id>releases</id>
-            <name>Releases</name>
-            <url>http://nexus.neuroten.com:8081/nexus/content/repositories/releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <name>Snapshots</name>
-            <url>http://nexus.neuroten.com:8081/nexus/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
+    <version>1.1.0</version>
+    <packaging>jar</packaging>
+    <name>qconf java driver</name>
+    <description>QConf is a Distributed Configuration Management System,This is  Qconf java driver</description>
+    <url>https://github.com/Qihoo360/QConf</url>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/Qihoo360/QConf.git</url>
+    </scm>
+
     <build>
         <plugins>
             <!-- Java Compiler Version -->
