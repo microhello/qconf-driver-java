@@ -1,9 +1,6 @@
 package net.qihoo.qconf;
-import java.io.File;
-import java.io.BufferedInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -13,7 +10,7 @@ import java.util.Map;
  */
 public class Qconf
 {
-    private static final String QCONF_DRIVER_JAVA_VERSION = "1.1.0";
+    private static final String QCONF_DRIVER_JAVA_VERSION = "1.2.0";
     static
     {
         // 1.load library
@@ -44,20 +41,45 @@ public class Qconf
         }
         });
     }
+    static String getOSArch() {
+        String arch = System.getProperty("os.arch");
+        arch = arch.toLowerCase().trim();
+        if ("i386".equals(arch) || "i686".equals(arch)) {
+            arch = "x86";
+        }
+        else if ("x86_64".equals(arch) || "amd64".equals(arch)) {
+            arch = "x86-64";
+        }
+        return arch;
+    }
+    static String getOSName() {
+        String osName = System.getProperty("os.name");
 
+        if (osName.startsWith("Linux")) {
+            return "linux";
+        }
+        else if (osName.startsWith("Mac") || osName.startsWith("Darwin")) {
+            return "darwin";
+        }
+        else if (osName.startsWith("Windows")) {
+            return "win32";
+        }
+        return osName.toLowerCase().trim();
+    }
+    static String getNativeLibraryResourcePath(){
+        return getOSName()+"-"+getOSArch();
+    }
     private synchronized static void loadLib() throws IOException 
     {  
-        String libFullName = "libqconf_java.so";  
-//        String tmpLibFilePath = System.getProperty("java.io.tmpdir") + File.separator + libFullName;
-        InputStream in = null;  
-        BufferedInputStream reader = null;  
+        String libFullName = getNativeLibraryResourcePath()+File.separator+"libqconf.so";
+        InputStream in = null;
+        BufferedInputStream reader;
         FileOutputStream writer = null;  
 
-        File extractedLibFile = File.createTempFile("libqconf_java",".so"); 
+        File extractedLibFile = File.createTempFile("libqconf",".so");
         try { 
             in = Qconf.class.getResourceAsStream(File.separator + libFullName);  
-//            Qconf.class.getResource(libFullName);
-            reader = new BufferedInputStream(in);  
+            reader = new BufferedInputStream(in);
             writer = new FileOutputStream(extractedLibFile);  
             byte[] buffer = new byte[1024];  
             while (reader.read(buffer) > 0){  
@@ -75,7 +97,10 @@ public class Qconf
         System.load(extractedLibFile.toString());  
         if (extractedLibFile.exists())
         {
-            extractedLibFile.delete();
+            boolean deleted = extractedLibFile.delete();
+            if(!deleted){
+                System.err.println("Can't delete extracted temp lib file "+extractedLibFile.toString());
+            }
         }
     }  
 
