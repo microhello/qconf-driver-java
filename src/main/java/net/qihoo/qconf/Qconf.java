@@ -213,6 +213,7 @@ public class Qconf
      * get all children conf keys
      *
      * @param key   the key indicate one configure item
+     * @param idc   server room name
      * @return all children keys, return null if failed
      * @exception QconfException 
      *              if any exception of qconf happend during the operation
