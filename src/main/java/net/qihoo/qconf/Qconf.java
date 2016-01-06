@@ -66,22 +66,41 @@ public class Qconf
         }
         return osName.toLowerCase().trim();
     }
-    static String getNativeLibraryResourcePath(){
+    static String getLibFileFullName(){
+        return getNativeLibraryResourcePath()+File.separator+"libqconf."+getOSLibPostfix();
+    }
+
+    private static String getOSLibPostfix() {
+        String osName = System.getProperty("os.name");
+
+        if (osName.startsWith("Linux")) {
+            return "so";
+        }
+        else if (osName.startsWith("Mac") || osName.startsWith("Darwin")) {
+            return "dylib";
+        }
+        else if (osName.startsWith("Windows")) {
+            return "dll";
+        }
+        return "so";
+    }
+
+    private static String getNativeLibraryResourcePath(){
         return getOSName()+"-"+getOSArch();
     }
     private synchronized static void loadLib() throws IOException 
     {  
-        String libFullName = getNativeLibraryResourcePath()+File.separator+"libqconf.so";
+        String libFullName = getLibFileFullName();
         InputStream in = null;
         BufferedInputStream reader;
         FileOutputStream writer = null;  
 
-        File extractedLibFile = File.createTempFile("libqconf",".so");
+        File extractedLibFile = File.createTempFile("libqconf",getOSLibPostfix());
         try { 
             in = Qconf.class.getResourceAsStream(File.separator + libFullName);  
             reader = new BufferedInputStream(in);
             writer = new FileOutputStream(extractedLibFile);  
-            byte[] buffer = new byte[1024];  
+            byte[] buffer = new byte[10240];
             while (reader.read(buffer) > 0){  
                 writer.write(buffer);  
                 buffer = new byte[1024];  
